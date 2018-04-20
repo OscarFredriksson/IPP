@@ -1,6 +1,6 @@
 /*  Vibrerande armband för döva
  *  ------------------------------------------------------------------------------------
- *  Tar in en signal från mikrofonen och sparar endast de relevanta signalerna. 
+ *  Programmet tar in en signal från mikrofonen och sparar endast de relevanta signalerna. 
  *  Om signalen går över ett tröskelvärde vibrerar motorn så länge ljudnivån håller sig  
  *  över tröskelvärdet.
  *  ------------------------------------------------------------------------------------
