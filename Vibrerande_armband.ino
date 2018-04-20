@@ -45,7 +45,7 @@ int readSignal()    //Läser ljud under en förbestämd tid och returnerar den s
    unsigned int signalMax = 0;      //Signalens maxvärde
    unsigned int signalMin = 1023;   //Signalens minvärde
 
-   unsigned int input;              //Det inlästa värdet
+   unsigned int input;              //Den inlästa signalen från mikrofonen
 
    while (millis() - start < sampleTime)  //Samla data under den förbestämda tiden 
    {
