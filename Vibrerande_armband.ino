@@ -9,22 +9,24 @@
 
 void setup()    //Används inte för tillfället, behövs för att gå igenom kompileringen
 {
-    //Serial.begin(9600); //Startar serial monitorn
+    Serial.begin(9600);     //Startar serial monitorn
 }
 
-const int motorPin = 3;     //Vilken pin vibrationsmotorn är inkopplad på
-const int threshold = 1000;  //Tröskelvärde för ljudnivån
+const int motorPin = 3;         //Vilken pin vibrationsmotorn är inkopplad på
+const int threshold = 1000;     //Tröskelvärde för ljudnivån
 
-void loop() 
+void loop()
 {   
-   //Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
-   if(readSignal() > threshold) //Om  intläst ljudsignal är över tröskelvärdet
-    analogWrite(motorPin, 255); //Driv motorn på maxfart
-   else //Så fort signalen inte längre är över tröskelvärdet
-    analogWrite(motorPin, 0); //Stäng av motorn
+    /*
+     * Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet
+     */
+    if(readSignal() > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
+        analogWrite(motorPin, 255);     //Driv motorn på maxfart
+    else                                //Så fort signalen inte längre är över tröskelvärdet
+        analogWrite(motorPin, 0);       //Stäng av motorn
 }
 
-int readSignal()
+int readSignal()    //Läser ljud under en förbestämd tid och returnerar den största inlästa peak to peak amplituden
 {
    const int sampleTime = 50;       //Hur många ms programmet ska sampla ljud
    
@@ -43,10 +45,11 @@ int readSignal()
      if (input > signalMax) //Om inläsningen är större än det tidigare maxvärdet
         signalMax = input;  //Spara det nya maxvärdet
      
-     else if (input < signalMin)  //Om inläsningen är mindre än det tidigare minvärdet
-        signalMin = input;  //Spara det nya minvärdet
+     else if (input < signalMin)    //Om inläsningen är mindre än det tidigare minvärdet
+        signalMin = input;          //Spara det nya minvärdet
    }
    peakToPeak = signalMax - signalMin;  //Beräknar peak to peak amplituden
+   
    return peakToPeak;                   //Returnerar amplituden
 }
 
