@@ -9,7 +9,7 @@
 
 //Använder define istället för const int för att kunna byta mellan int och string utan problem
 #define motorPin 3           //Vilken pin vibrationsmotorn är inkopplad på
-#define ledPin LED_BUILTIN   //Vilken pin lysdioden är inkopplad på
+#define ledPin 13          //Vilken pin lysdioden är inkopplad på
 #define threshold 1000       //Tröskelvärde för ljudnivån
 
 void setup()    //Används inte för tillfället, behövs för att gå igenom kompileringen
