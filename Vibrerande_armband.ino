@@ -28,7 +28,7 @@ void loop()
         analogWrite(motorPin, 255);     //Driv motorn på maxfart
         digitalWrite(ledPin, HIGH);     //Tänd lysdioden
     }
-    else                                //Så fort signalen inte längre är över tröskelvärdet
+    else    //Så fort signalen inte längre är över tröskelvärdet
     {
         analogWrite(motorPin, 0);       //Stäng av motorn
         digitalWrite(ledPin, LOW);      //Släck lysdioden      
