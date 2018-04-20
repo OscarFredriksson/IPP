@@ -34,7 +34,7 @@ int readSignal()
    unsigned int peakToPeak = 0;     //Amplituden mellan den högsta och lägsta spiken
   
    unsigned int signalMax = 0;      //Signalens maxvärde
-   unsigned int signalMin = 1024;   //Signalens minvärde
+   unsigned int signalMin = 1023;   //Signalens minvärde
 
    unsigned int input;              //Det inlästa värdet
 
