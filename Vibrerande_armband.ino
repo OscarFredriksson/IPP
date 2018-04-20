@@ -9,7 +9,7 @@
 
 const int motorPin = 6;     //Vilken pin vibrationsmotorn är inkopplad på
 const int ledPin = 7;
-const int threshold = 1000;  //Tröskelvärde för ljudnivån
+const int threshold = 800;  //Tröskelvärde för ljudnivån
 
 void setup() 
 {
@@ -23,16 +23,13 @@ void loop()
    if(readSignal() > threshold) //Om  intläst ljudsignal är över tröskelvärdet
     digitalWrite(motorPin, HIGH);  //Driv motorn
    else //Så fort signalen inte längre är över tröskelvärdet
-   {
     digitalWrite(motorPin, LOW);  //Stäng av motorn
-    delay(100); //Vänta en liten stund så ljudet från vibrationsmotorn inte sätter sig själv i loop
-   }
    
 }
 
 int readSignal()
 {
-   const int sampleTime = 50;       //Hur länge programmet ska sampla ljud
+   const int sampleTime = 50;       //Hur många ms programmet ska sampla ljud
    
    unsigned long start = millis();  //Påbörja tidräkningen 
    unsigned int peakToPeak = 0;     //Amplituden mellan den högsta och lägsta spiken
