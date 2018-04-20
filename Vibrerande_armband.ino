@@ -25,6 +25,7 @@ void loop()
    else //Så fort signalen inte längre är över tröskelvärdet
    {
     digitalWrite(motorPin, LOW);  //Stäng av motorn
+    delay(100); //Vänta en liten stund så ljudet från vibrationsmotorn inte sätter sig själv i loop
    }
    
 }
