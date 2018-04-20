@@ -7,23 +7,31 @@
  *  Kod skriven av: Oscar Fredriksson
  */
 
+#define motorPin = 3;           //Vilken pin vibrationsmotorn är inkopplad på
+#define ledPin = LED_BUILTIN;   //Vilken pin lysdioden är inkopplad på
+#define threshold = 1000;       //Tröskelvärde för ljudnivån
+
 void setup()    //Används inte för tillfället, behövs för att gå igenom kompileringen
 {
-    Serial.begin(9600);     //Startar serial monitorn
+    Serial.begin(9600);         //Startar serial monitorn
+    pinMode(ledPin, OUTPUT);    //Definiera ledPin som en output
 }
-
-const int motorPin = 3;         //Vilken pin vibrationsmotorn är inkopplad på
-const int threshold = 1000;     //Tröskelvärde för ljudnivån
 
 void loop()
 {   
     /*
-     * Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet
+     * Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
      */
     if(readSignal() > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
+    {
         analogWrite(motorPin, 255);     //Driv motorn på maxfart
+        digitalWrite(ledPin, HIGH);     //Tänd lysdioden
+    }
     else                                //Så fort signalen inte längre är över tröskelvärdet
+    {
         analogWrite(motorPin, 0);       //Stäng av motorn
+        digitalWrite(ledPin, LOW);      //Släck lysdioden      
+    }
 }
 
 int readSignal()    //Läser ljud under en förbestämd tid och returnerar den största inlästa peak to peak amplituden
