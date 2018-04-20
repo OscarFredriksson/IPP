@@ -7,23 +7,21 @@
  *  Kod skriven av: Oscar Fredriksson
  */
 
-const int motorPin = 6;     //Vilken pin vibrationsmotorn är inkopplad på
-const int ledPin = 7;
-const int threshold = 1000;  //Tröskelvärde för ljudnivån
-
-void setup() 
+void setup()    //Används inte för tillfället, behövs för att gå igenom kompileringen
 {
-    Serial.begin(9600); //Startar serial monitorn
-    pinMode(motorPin, OUTPUT);  //Definierar motorPin som en output
+    //Serial.begin(9600); //Startar serial monitorn
 }
+
+const int motorPin = 3;     //Vilken pin vibrationsmotorn är inkopplad på
+const int threshold = 1000;  //Tröskelvärde för ljudnivån
 
 void loop() 
 {   
    //Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
    if(readSignal() > threshold) //Om  intläst ljudsignal är över tröskelvärdet
-    digitalWrite(motorPin, HIGH);  //Driv motorn
+    analogWrite(motorPin, 255); //Driv motorn på maxfart
    else //Så fort signalen inte längre är över tröskelvärdet
-    digitalWrite(motorPin, LOW);  //Stäng av motorn
+    analogWrite(motorPin, 0); //Stäng av motorn
 }
 
 int readSignal()
@@ -49,7 +47,6 @@ int readSignal()
         signalMin = input;  //Spara det nya minvärdet
    }
    peakToPeak = signalMax - signalMin;  //Beräknar peak to peak amplituden
-   Serial.println(peakToPeak);          //Skriver amplituden till serial monitorn
    return peakToPeak;                   //Returnerar amplituden
 }
 
