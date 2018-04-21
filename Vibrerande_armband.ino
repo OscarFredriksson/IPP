@@ -4,25 +4,23 @@
  *  Om signalen går över ett tröskelvärde vibrerar motorn så länge ljudnivån håller sig  
  *  över tröskelvärdet.
  *  ------------------------------------------------------------------------------------
- *  Kod skriven av: Oscar Fredriksson
+ *  Kod skriven av: Oscar Fredriksson   
  */
 
-//Använder define istället för const int för att kunna byta mellan int och string utan problem
+//Använder define istället för const int för att enkelt kunna byta mellan int och string
 #define motorPin 3           //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN   //Vilken pin lysdioden är inkopplad på
-#define threshold 1000       //Tröskelvärde för ljudnivån
+#define threshold 10 00       //Tröskelvärde för ljudnivån
 
-void setup()    //Används inte för tillfället, behövs för att gå igenom kompileringen
+void setup()
 {
-    Serial.begin(9600);         //Startar serial monitorn
+    Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
     pinMode(ledPin, OUTPUT);    //Definiera ledPin som en output
 }
 
 void loop()
 {   
-    /*
-     * Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
-     */
+    //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
     if(readSignal() > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
     {
         analogWrite(motorPin, 255);     //Driv motorn på maxfart
@@ -61,4 +59,3 @@ int readSignal()    //Läser ljud under en förbestämd tid och returnerar den s
    
    return peakToPeak;                   //Returnerar amplituden
 }
-
