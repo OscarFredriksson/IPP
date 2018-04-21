@@ -20,9 +20,7 @@ void setup()    //Används inte för tillfället, behövs för att gå igenom ko
 
 void loop()
 {   
-    /*
-     * Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
-     */
+    //Motorn kommer vibrera sålänge ljudsignalen är över tröskelvärdet 
     if(readSignal() > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
     {
         analogWrite(motorPin, 255);     //Driv motorn på maxfart
