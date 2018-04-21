@@ -10,7 +10,7 @@
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
 #define motorPin 3           //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN   //Vilken pin lysdioden är inkopplad på
-#define threshold 10 00       //Tröskelvärde för ljudnivån
+#define threshold 1000       //Tröskelvärde för ljudnivån
 
 void setup()
 {
@@ -57,5 +57,5 @@ int readSignal()    //Läser ljud under en förbestämd tid och returnerar den s
    }
    peakToPeak = signalMax - signalMin;  //Beräknar peak to peak amplituden
    
-   return peakToPeak;                   //Returnerar amplituden
+   return peakToPeak;   //Returnerar amplituden
 }
