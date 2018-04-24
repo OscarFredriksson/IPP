@@ -8,9 +8,10 @@
  */
 
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
-#define motorPin 3           //Vilken pin vibrationsmotorn är inkopplad på
-#define ledPin LED_BUILTIN   //Vilken pin lysdioden är inkopplad på
-#define threshold 1000       //Tröskelvärde för ljudnivån
+#define inputPin 0          //Vilken pin mikrofonen är inkopplad på
+#define motorPin 3          //Vilken pin vibrationsmotorn är inkopplad på
+#define ledPin LED_BUILTIN  //Vilken pin lysdioden är inkopplad på
+#define threshold 1000      //Tröskelvärde för ljudnivån
 
 void setup()
 {
@@ -47,7 +48,7 @@ int readSignal()    //Läser ljud under en förbestämd tid och returnerar den s
 
    while (millis() - start < sampleTime)  //Samla data under den förbestämda tiden 
    {
-     input = analogRead(5); //Läs det analoga värdet
+     input = analogRead(inputPin); //Läs det analoga värdet
   
      if (input > signalMax) //Om inläsningen är större än det tidigare maxvärdet
         signalMax = input;  //Spara det nya maxvärdet
