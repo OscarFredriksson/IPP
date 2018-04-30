@@ -7,16 +7,25 @@
  *  Kod skriven av: Oscar Fredriksson   
  */
 
+#include <Software.Serial.h>
+
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
 #define inputPin 0          //Vilken pin mikrofonen är inkopplad på
 #define motorPin 3          //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN  //Vilken pin lysdioden är inkopplad på
 #define threshold 1000      //Tröskelvärde för ljudnivån
+#define rxPin 7
+#define txPin 8
+
+SoftwareSerial bluetooth (rxPin, txPin);
 
 void setup()
 {
-    Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
     pinMode(ledPin, OUTPUT);    //Definiera ledPin som en output
+    pinMode(rxPin, INPUT);      //Definera rxPin som en input
+    pinMode(txPin, OUTPUT);     //definiera txPin som en output
+    Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
+    bluetooth.begin(9600);      //Startar bluetooth monitorn
 }
 
 void loop()
