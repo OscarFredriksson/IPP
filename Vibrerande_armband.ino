@@ -1,27 +1,29 @@
 /*  Vibrerande armband för döva
- *  ------------------------------------------------------------------------------------
- *  Programmet tar in en signal från mikrofonen och sparar endast de relevanta signalerna. 
- *  Om signalen går över ett tröskelvärde vibrerar motorn så länge ljudnivån håller sig  
+ *  -------------------------------------------------------------------------------------------------------
+ *  Programmet tar in en signal från mikrofonen och räknar utifrån detta ut amplituden (alltså ljudnivån) 
+ *  för aktuell ljudvåg. Om amplituden går över ett tröskelvärde vibrerar motorn så länge denna håller sig 
  *  över tröskelvärdet.
- *  ------------------------------------------------------------------------------------
+ *  Programmet kommunicerar via bluetooth med tillhörande konfigueringsapp. Denna kan användas för att 
+ *  konfiguera vibrationsstyrkan, det aktuella värdet sparas på Arduinon och laddas in varje gång denna 
+ *  startas. Programmet skickar även konstant inläst amplitud till appen för att kunna logga denna. 
+ *  --------------------------------------------------------------------------------------------------------
  *  Kod skriven av: Oscar Fredriksson   
  */
 
-#include <SoftwareSerial.h>
-#include <EEPROM.h>
+#include <SoftwareSerial.h> //För bluetooth uppkopplingen
+#include <EEPROM.h> //För att spara till minnet
 
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
 #define inputPin 0          //Vilken pin mikrofonen är inkopplad på
 #define motorPin 3          //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN  //Vilken pin lysdioden är inkopplad på
 #define threshold 1000      //Tröskelvärde för ljudnivån
-#define rxPin 7
-#define txPin 8
+#define rxPin 7             //Rx pin för bluetooth uppkopplingen
+#define txPin 8             //Tx pin för bluetooth uppkopplingen
 
-SoftwareSerial bluetoothSerial (rxPin, txPin);
+SoftwareSerial bluetoothSerial (rxPin, txPin);  //Initiering av bluetooth uppkopplingen
 
-int amplitude;
-int vibrStrength = 255;
+int vibrStrength; //Variabel för vibrationsstyrkan
 
 void setup()
 {
@@ -29,16 +31,16 @@ void setup()
     pinMode(rxPin, INPUT);      //Definera rxPin som en input
     pinMode(txPin, OUTPUT);     //definiera txPin som en output
     Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
-    bluetoothSerial.begin(9600);      //Startar bluetooth monitorn
+    bluetoothSerial.begin(9600);      //Startar bluetoothkopplingen
     vibrStrength = EEPROM.read(0);  //Läs vibrationsstyrkan från minnet
 }
 
 void loop()
 {   
-    readBluetooth();
+    readBluetooth();    //Läs från appen
 
-    amplitude = readSignal();
-    bluetoothSerial.print(amplitude);
+    int amplitude = readSignal();   //Läs amplituden
+    bluetoothSerial.print(amplitude);   //Skicka amplituden till appen
 
     //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
     if(amplitude > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
@@ -56,9 +58,14 @@ void loop()
 void readBluetooth()
 {
     int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
+    
     if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
     {
-        vibrStrength = temp;    //Tilldela det till variabeln
+        //Om det skickade värdet är låg, mellan eller hög, tilldela relevanta värden
+        if(temp == 1)   vibrStrength = 100; 
+        if(temp == 2)   vibrStrength = 200;
+        if(temp == 3)   vibrStrength = 255; 
+        
         EEPROM.write(0, vibrStrength);  //Skriv det nya värdet till minnet
     }
 }
