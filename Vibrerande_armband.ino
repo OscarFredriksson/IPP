@@ -18,7 +18,7 @@
 #define rxPin 7
 #define txPin 8
 
-SoftwareSerial bluetooth (rxPin, txPin);
+SoftwareSerial bluetoothSerial (rxPin, txPin);
 
 int amplitude;
 int vibrStrength = 255;
@@ -29,24 +29,18 @@ void setup()
     pinMode(rxPin, INPUT);      //Definera rxPin som en input
     pinMode(txPin, OUTPUT);     //definiera txPin som en output
     Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
-    bluetooth.begin(9600);      //Startar bluetooth monitorn
+    bluetoothSerial.begin(9600);      //Startar bluetooth monitorn
     vibrStrength = EEPROM.read(0);  //Läs vibrationsstyrkan från minnet
 }
 
 void loop()
 {   
-  
-    //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
+    readBluetooth();
+
     amplitude = readSignal();
-    bluetooth.print(amplitude);
+    bluetoothSerial.print(amplitude);
 
-    int temp = bluetooth.read();    //Läser in från blåtandsuppkopplingen
-    if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
-    {
-        vibrStrength = temp;    //Tilldela det till variabeln
-        EEPROM.write(0, vibrStrength);  //Skriv det nya värdet till minnet
-    }
-
+    //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
     if(amplitude > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
     {
         analogWrite(motorPin, vibrStrength);     //Driv motorn på maxfart
@@ -56,6 +50,16 @@ void loop()
     {
         analogWrite(motorPin, 0);       //Stäng av motorn
         digitalWrite(ledPin, LOW);      //Släck lysdioden      
+    }
+}
+
+void readBluetooth()
+{
+    int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
+    if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
+    {
+        vibrStrength = temp;    //Tilldela det till variabeln
+        EEPROM.write(0, vibrStrength);  //Skriv det nya värdet till minnet
     }
 }
 
