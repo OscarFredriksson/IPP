@@ -7,7 +7,8 @@
  *  Kod skriven av: Oscar Fredriksson   
  */
 
-#include <Software.Serial.h>
+#include <SoftwareSerial.h>
+#include <EEPROM.h>
 
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
 #define inputPin 0          //Vilken pin mikrofonen är inkopplad på
@@ -19,6 +20,9 @@
 
 SoftwareSerial bluetooth (rxPin, txPin);
 
+int amplitude;
+int vibrStrength = 255;
+
 void setup()
 {
     pinMode(ledPin, OUTPUT);    //Definiera ledPin som en output
@@ -26,14 +30,26 @@ void setup()
     pinMode(txPin, OUTPUT);     //definiera txPin som en output
     Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
     bluetooth.begin(9600);      //Startar bluetooth monitorn
+    vibrStrength = EEPROM.read(0);  //Läs vibrationsstyrkan från minnet
 }
 
 void loop()
 {   
+  
     //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
-    if(readSignal() > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
+    amplitude = readSignal();
+    bluetooth.print(amplitude);
+
+    int temp = bluetooth.read();    //Läser in från blåtandsuppkopplingen
+    if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
     {
-        analogWrite(motorPin, 255);     //Driv motorn på maxfart
+        vibrStrength = temp;    //Tilldela det till variabeln
+        EEPROM.write(0, vibrStrength);  //Skriv det nya värdet till minnet
+    }
+
+    if(amplitude > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
+    {
+        analogWrite(motorPin, vibrStrength);     //Driv motorn på maxfart
         digitalWrite(ledPin, HIGH);     //Tänd lysdioden
     }
     else    //Så fort signalen inte längre är över tröskelvärdet
