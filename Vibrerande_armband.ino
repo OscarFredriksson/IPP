@@ -17,10 +17,11 @@
 #define inputPin 0          //Vilken pin mikrofonen är inkopplad på
 #define motorPin 3          //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN  //Vilken pin lysdioden är inkopplad på
+
 #define threshold 1000      //Tröskelvärde för ljudnivån
+
 #define rxPin 7             //Rx pin för bluetooth uppkopplingen
 #define txPin 8             //Tx pin för bluetooth uppkopplingen
-
 SoftwareSerial bluetoothSerial (rxPin, txPin);  //Initiering av bluetooth uppkopplingen
 
 int vibrStrength; //Variabel för vibrationsstyrkan
@@ -30,8 +31,10 @@ void setup()
     pinMode(ledPin, OUTPUT);    //Definiera ledPin som en output
     pinMode(rxPin, INPUT);      //Definera rxPin som en input
     pinMode(txPin, OUTPUT);     //definiera txPin som en output
+    
     Serial.begin(9600);         //Startar serial monitorn (används för tillfället endast för felsökning)
     bluetoothSerial.begin(9600);      //Startar bluetoothkopplingen
+    
     vibrStrength = EEPROM.read(0);  //Läs vibrationsstyrkan från minnet
 }
 
@@ -43,7 +46,7 @@ void loop()
     bluetoothSerial.print(amplitude);   //Skicka amplituden till appen
 
     //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
-    if(amplitude > threshold)        //Om  intläst ljudsignal är över tröskelvärdet
+    if(amplitude > threshold)        //Om  inläst amplitud är över tröskelvärdet
     {
         analogWrite(motorPin, vibrStrength);     //Driv motorn på maxfart
         digitalWrite(ledPin, HIGH);     //Tänd lysdioden
@@ -55,14 +58,14 @@ void loop()
     }
 }
 
-void readBluetooth()
+void readBluetooth()    //Läser vibrationsstyrkan från blåtandsuppkopplingen
 {
     int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
     
     if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
     {
         //Om det skickade värdet är låg, mellan eller hög, tilldela relevanta värden
-        if(temp == 1)   vibrStrength = 100; 
+        if(temp == 1)   vibrStrength = 150; 
         if(temp == 2)   vibrStrength = 200;
         if(temp == 3)   vibrStrength = 255; 
         
@@ -73,10 +76,9 @@ void readBluetooth()
 int readSignal()    //Läser ljud under en förbestämd tid och returnerar den största inlästa peak to peak amplituden
 {
    const int sampleTime = 50;       //Hur många ms programmet ska sampla ljud
-   
    unsigned long start = millis();  //Påbörja tidräkningen 
-   unsigned int peakToPeak = 0;     //Amplituden mellan den högsta och lägsta spiken
-  
+   
+   unsigned int peakToPeak = 0;     //Amplituden mellan den högsta och lägsta spiken 
    unsigned int signalMax = 0;      //Signalens maxvärde
    unsigned int signalMin = 1023;   //Signalens minvärde
 
