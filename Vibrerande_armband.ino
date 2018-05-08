@@ -12,19 +12,29 @@
 
 #include <SoftwareSerial.h> //För bluetooth uppkopplingen
 #include <EEPROM.h> //För att spara till minnet
+#include <TimedAction.h>    //För bluetoothLoop()
 
 //Använder define istället för const int för att enkelt kunna byta mellan int och string
-#define inputPin 0          //Vilken pin mikrofonen är inkopplad på
-#define motorPin 3          //Vilken pin vibrationsmotorn är inkopplad på
+#define inputPin A0          //Vilken pin mikrofonen är inkopplad på
+#define motorPin 5          //Vilken pin vibrationsmotorn är inkopplad på
 #define ledPin LED_BUILTIN  //Vilken pin lysdioden är inkopplad på
 
 #define threshold 1000      //Tröskelvärde för ljudnivån
 
-#define rxPin 7             //Rx pin för bluetooth uppkopplingen
-#define txPin 8             //Tx pin för bluetooth uppkopplingen
-SoftwareSerial bluetoothSerial (rxPin, txPin);  //Initiering av bluetooth uppkopplingen
+#define rxPin 8             //Rx pin för bluetooth uppkopplingen
+#define txPin 7             //Tx pin för bluetooth uppkopplingen
+SoftwareSerial bluetoothSerial (rxPin, txPin);  //Initiering av bluetooth-uppkopplingen
 
-int vibrStrength; //Variabel för vibrationsstyrkan
+int vibrStrength;
+int amplitude;   
+
+void bluetoothLoop()    //Körs en gång i sekunden
+{
+    readBluetooth();    //Läs från appen
+    bluetoothSerial.print(amplitude);   //Skriv till appen
+}
+
+TimedAction bluetoothTimer(100, bluetoothLoop);    //Initering av bluetooth-loopen
 
 void setup()
 {
@@ -40,10 +50,9 @@ void setup()
 
 void loop()
 {   
-    readBluetooth();    //Läs från appen
+    bluetoothTimer.check(); //Kolla om det är dags att köra bluetooth-loopen
 
-    int amplitude = readSignal();   //Läs amplituden
-    bluetoothSerial.print(amplitude);   //Skicka amplituden till appen
+    amplitude = readSignal();   //Läs amplituden
 
     //Motorn kommer vibrera sålänge ljudsignalen når över tröskelvärdet 
     if(amplitude > threshold)        //Om  inläst amplitud är över tröskelvärdet
@@ -60,13 +69,15 @@ void loop()
 
 void readBluetooth()    //Läser vibrationsstyrkan från blåtandsuppkopplingen
 {
-    int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
-    
-    if(temp)    //Om variabeln inte är 0 är det ett värde för vibrationsstyrkan
+    //int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
+    int temp = bluetoothSerial.read();
+    Serial.print("mottaget: ");
+    Serial.println(temp);
+    if(temp == 1 || temp == 2 || temp == 3)
     {
         //Om det skickade värdet är låg, mellan eller hög, tilldela relevanta värden
-        if(temp == 1)   vibrStrength = 150; 
-        if(temp == 2)   vibrStrength = 200;
+        if(temp == 1)   vibrStrength = 100; 
+        if(temp == 2)   vibrStrength = 175;
         if(temp == 3)   vibrStrength = 255; 
         
         EEPROM.write(0, vibrStrength);  //Skriv det nya värdet till minnet
