@@ -71,8 +71,6 @@ void readBluetooth()    //Läser vibrationsstyrkan från blåtandsuppkopplingen
 {
     //int temp = bluetoothSerial.read();    //Läser in från blåtandsuppkopplingen
     int temp = bluetoothSerial.read();
-    Serial.print("mottaget: ");
-    Serial.println(temp);
     if(temp == 1 || temp == 2 || temp == 3)
     {
         //Om det skickade värdet är låg, mellan eller hög, tilldela relevanta värden
