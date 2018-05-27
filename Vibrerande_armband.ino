@@ -42,8 +42,8 @@ void setup()
 
 void loop()
 {
-    bluetoothSerial.flush();
-    readBluetooth();
+    bluetoothSerial.flush();    //Tömmer buffern, kan hjälpa mot instabilitet
+    readBluetooth();            //Läser från appen
     bluetoothSerial.println(amplitude);   //Skriv till appen
 
     //vibrStrength = 255;
@@ -64,12 +64,11 @@ void loop()
 
 void readBluetooth()    //Läser vibrationsstyrkan från blåtandsuppkopplingen
 {
-    if(bluetoothSerial.available() > 0)
+    if(bluetoothSerial.available() > 0) //Om det finns data i buffern
     {
-        int temp = bluetoothSerial.read();
-        Serial.println(temp);
+        int temp = bluetoothSerial.read();  //Spara datan för enkelhetensskull
 
-        //Om det skickade värdet är låg, mellan eller hög, tilldela relevanta värden
+        //Om det mottagna värdet är låg, mellan eller hög, tilldela relevanta värden
         if      (temp == 3)   vibrStrength = 100; 
         else if (temp == 2)   vibrStrength = 150;
         else if (temp == 1)   vibrStrength = 255; 
